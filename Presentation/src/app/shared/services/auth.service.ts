@@ -80,7 +80,8 @@ export class AuthService {
           catchError((error) => {
             return of (error.status);
           })
-        )      
+        )
     }
+    return of(false);
   }
 }

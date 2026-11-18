@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { MedicoCreateInput, MedicoModel } from '../models/medico-model';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 type ParametrosMedico = Record<string, string | number | boolean>;
 const _SERVIDOR = environment.servidor;
