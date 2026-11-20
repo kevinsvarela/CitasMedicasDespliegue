@@ -177,7 +177,8 @@ export class MedicoComponent implements OnInit {
     this.srvPrint.print(columnas, filas, 'Catálogo de médicos');
   }
   onFilterClose() {
-
+    this.resetearFiltro();
+    this.panelFilterState.set(false);
   }
   toggleFilterPanel(): void {
     this.panelFilterState.update((isOpen) => !isOpen);

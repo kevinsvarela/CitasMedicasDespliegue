@@ -1,8 +1,8 @@
 <section class="flex">
     <mat-toolbar class="header">
         <button matIconButton class="botonMenu" (click)="sidenav.toggle();"
-                [matTooltip]="sidenav.opened ? 'Cerrar menu' : 'Abrir menu'"
-                 [disabled]="!logeado()">
+                [matTooltip]="sidenav.opened ? 'Cerrar menu' : 'Abrir menu'" matTooltipPosition="right"
+                 [disabled]="!authService.sesionActiva()">
                 <mat-icon>menu</mat-icon>
         </button>
         <div class="me-4 flex">
@@ -11,15 +11,18 @@
             </button>
         </div>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item [routerLink]="['/login']" [hidden]="this.authService.isLoggedIn()">Iniciar Sesión</button>
-            <button mat-menu-item (click)="loggout();" [hidden]="!this.authService.isLoggedIn()">Cerrar Sesión</button>
+            <button mat-menu-item [routerLink]="['/login']" [hidden]="authService.sesionActiva()">Iniciar Sesión</button>
+            <button mat-menu-item (click)="loggout();" [hidden]="!authService.sesionActiva()">Cerrar Sesión</button>
             <mat-divider></mat-divider>
-            <button mat-menu-item [routerLink]="['/changePassw']" [hidden]="!this.authService.isLoggedIn()" >Cambiar contraseña</button>
+            <button mat-menu-item [routerLink]="['/changePassw']" [hidden]="!authService.sesionActiva()" >Cambiar contraseña</button>
         </mat-menu>
     </mat-toolbar>
 
     <mat-sidenav-container class="container">
-        <mat-sidenav #sidenav mode="side" [opened]="logeado()" class="sidenav">
+        <mat-sidenav #sidenav class="sidenav"
+            [mode]="isMobile() ? 'over' : 'side'"
+            [opened]="authService.sesionActiva() && !isMobile()"
+        >
             
             <mat-nav-list>
                 <!--mat-list-item class="bg-amber-300! rounded-sm!">{{authService.userActualS().nombre}}</mat-list-item-->
@@ -28,8 +31,8 @@
                 
                 @for(item of menuItems(); track item.label) {
                     <!--mat-list-item [hidden]="!item.rol.includes(this.authService.userActualS().rol)"-->
-                    <mat-list-item [hidden]="!true">
-                        <a href="" [routerLink]="item.route">
+                    <mat-list-item >
+                        <a href="" [routerLink]="item.route" (click)="isMobile() && sidenav.close()">
                             <mat-icon>{{item.icon}}</mat-icon>
                             {{item.label}}
                         </a>

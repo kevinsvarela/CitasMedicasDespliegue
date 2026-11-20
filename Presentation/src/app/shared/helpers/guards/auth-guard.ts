@@ -1,17 +1,16 @@
 import { inject } from '@angular/core/primitives/di';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanActivateFn } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   //return true;
   //return false;
   const authService = inject(AuthService);
-  const router = inject(Router);
-  
+
   if (authService.isLoggedIn()) {
     return true;
-  } else {
-    router.navigate(['/login']);
-    return false;
   }
+  // avisa al backend si había token, limpia la sesión y navega a /login
+  authService.loggout();
+  return false;
 };

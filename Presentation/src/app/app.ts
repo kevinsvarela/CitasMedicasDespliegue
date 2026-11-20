@@ -1,4 +1,7 @@
 import { Component, HostListener, signal, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { map } from 'rxjs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { RouterModule, RouterOutlet } from '@angular/router';
@@ -33,6 +36,15 @@ type MenuItem = {
 export class App {
   protected readonly title = signal('Presentation');
   protected readonly authService = inject(AuthService);
+    private readonly breakpointObserver = inject(BreakpointObserver);
+
+  // true cuando el dispositivo es móvil (pantalla angosta, < 960px)
+  protected readonly isMobile = toSignal(
+    this.breakpointObserver
+      .observe([Breakpoints.XSmall, Breakpoints.Small])
+      .pipe(map(result => result.matches)),
+    { initialValue: false }
+  );
   menuItems = signal<MenuItem[]>([
     {label: 'Inicio', icon: 'home', route:'home', rol :[0, 1 , 2, 3]},
     {label: 'Medicos', icon: 'group', route:'medico', rol : [0, 1, 3]},
@@ -46,7 +58,7 @@ export class App {
   loggout(){
     this.authService.loggout();
   }
-  logeado() : boolean {
+/*   logeado() : boolean {
     return this.authService.isLoggedIn(); //ponerlo directo en el html
-  }
+  } */
 }

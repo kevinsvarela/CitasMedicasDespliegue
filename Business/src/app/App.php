@@ -48,30 +48,26 @@ $errorMiddleware->setErrorHandler(AuthorizationException::class,
 	}
 );
 
-/* $app->add(function (Request $request, RequestHandlerInterface $handler) use ($app): Response {
+$app->add(function (Request $request, RequestHandlerInterface $handler) use ($app): Response {
 	$origin = $request->getHeaderLine('Origin');
-	
-	var_dump($origin); die();
-$allowedOrigins = [
-    'http://localhost:4200',   // Angular web (desarrollo)
-    'https://localhost',       // Capacitor Android
-    'http://localhost',        // Capacitor Android con androidScheme: 'http'
-    // 'https://tu-dominio.com' // Angular web en producción
-];
-	$configuredOrigins = $_ENV['CORS_ALLOWED_ORIGINS'] ?? $_ENV['CORS_ALLOWED_ORIGIN'] ?? '';
-	$allowedOrigins = array_unique(array_merge(
-		['http://localhost:4200', 'http://localhost'],
-		array_filter(array_map('trim', explode(',', $configuredOrigins)))
+	// Orígenes permitidos separados por coma:
+	//  - http://localhost:4200 -> ng serve (web)
+	//  - http://localhost      -> WebView de Capacitor en Android (androidScheme: 'http')
+	//  - https://localhost / capacitor://localhost -> esquemas por defecto de Capacitor (Android / iOS)
+	$allowedOrigins = array_map('trim', explode(',',
+		$_ENV['CORS_ALLOWED_ORIGINS']
+			?? $_ENV['CORS_ALLOWED_ORIGIN']
+			?? 'http://localhost:4200,http://localhost:4300,http://localhost,https://localhost,capacitor://localhost'
 	));
-	$isAllowedOrigin = in_array($origin, $allowedOrigins, true);
+	$isAllowed = $origin !== '' && in_array($origin, $allowedOrigins, true);
 
-	if ($request->getMethod() === 'OPTIONS' && $isAllowedOrigin) {
+	if ($request->getMethod() === 'OPTIONS' && $isAllowed) {
 		$response = $app->getResponseFactory()->createResponse(204);
 	} else {
 		$response = $handler->handle($request);
 	}
 
-	if (!$isAllowedOrigin) {
+	if (!$isAllowed) {
 		return $response;
 	}
 
@@ -80,41 +76,6 @@ $allowedOrigins = [
 		->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
 		->withHeader('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, Origin, X-Requested-With')
 		->withHeader('Vary', 'Origin');
-});  */
-
- $app->options('/{routes:.+}', function (Request $request, Response $response) : Response {
-    return $response;
-}); 
-
-// CORS wraps the error and JWT middleware so their responses include CORS headers.
-$app->add(function (Request $request, RequestHandlerInterface $handler) use ($app) : Response {
-    $allowedOrigins = [
-        'http://localhost:4200',  // Angular web (desarrollo)
-        'https://localhost',      // Capacitor Android (androidScheme por defecto)
-        'http://localhost',       // Capacitor Android si usas androidScheme: 'http'
-    ];
-
-    $origin = $request->getHeaderLine('Origin');
-    $isAllowedOrigin = in_array($origin, $allowedOrigins, true);
-
-    if ($request->getMethod() === 'OPTIONS') {
-        $response = $app->getResponseFactory()->createResponse(204);
-    } else {
-        $response = $handler->handle($request);
-    }
-
-    if (!$isAllowedOrigin) {
-        return $response;
-    }
-
-    $response = $response
-        ->withHeader('Access-Control-Allow-Origin', $origin)
-        ->withHeader('Vary', 'Origin')
-        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
-        ->withHeader('Access-Control-Max-Age', '86400');
-
-    return $response;
 });
 
 $app->run();
