@@ -3,3 +3,5 @@ mysql/
 **/vendor/
 **/RestRequest/
 node_modules/
+.env.prod
+ca.pem
