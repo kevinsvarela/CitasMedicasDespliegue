@@ -3,5 +3,5 @@
 // - ng serve sigue usando environment.development.ts (http://localhost:9090/api)
 // - Android sigue usando environment.android.ts
 export const environment = {
-    servidor: '/api'
+    servidor: 'https://citas-negocio.onrender.com/api'
 };
