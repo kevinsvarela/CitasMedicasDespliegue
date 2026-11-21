@@ -14,7 +14,7 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    branch: main
+    branch: despliegue
     dockerContext: .
     dockerfilePath: ./Data/Dockerfile
     healthCheckPath: /
@@ -42,7 +42,7 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    branch: main
+    branch: despliegue
     dockerContext: .
     dockerfilePath: ./Business/Dockerfile
     envVars:
@@ -60,7 +60,7 @@ services:
           name: citas-datos
           envVarKey: INTERNAL_KEY
       - key: CORS_ALLOWED_ORIGINS
-        value: http://localhost,https://localhost,capacitor://localhost
+        value: http://localhost,https://localhost,capacitor://localhost,https://citas-medicas-m7k1.onrender.com
 
   # ---------------- Capa de PRESENTACIÓN ----------------
   - type: web
@@ -68,7 +68,7 @@ services:
     runtime: docker
     plan: free
     region: oregon
-    branch: main
+    branch: despliegue
     dockerContext: ./Presentation
     dockerfilePath: ./Presentation/Dockerfile
     envVars:
