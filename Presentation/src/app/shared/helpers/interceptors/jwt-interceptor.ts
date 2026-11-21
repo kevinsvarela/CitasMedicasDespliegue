@@ -5,7 +5,8 @@ import { inject } from '@angular/core/primitives/di';
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const token = inject(TokenService).token;
   // console.log(inject(TokenService).tokenTimeToExp());
-  if (token) {
+  // El login no necesita token; enviar uno viejo solo causa confusión.
+  if (token && !req.url.endsWith('/auth/login')) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`

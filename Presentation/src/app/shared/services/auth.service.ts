@@ -43,6 +43,10 @@ export class AuthService {
   }
 
   public login(datos : LoginForm) {
+    // Descartar tokens de una sesión anterior (p. ej. vencidos en localStorage)
+    // para que no viajen en la petición ni disparen el cierre/refresco automático.
+    clearTimeout(this.timerExp);
+    this.srvTokens.removeTokens();
     return this.http.post<IToken>(`${API_URL}/login`, datos)
       .pipe(
         tap((tokens) => {
