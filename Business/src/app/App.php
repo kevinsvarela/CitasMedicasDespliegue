@@ -57,7 +57,7 @@ $app->add(function (Request $request, RequestHandlerInterface $handler) use ($ap
 	$allowedOrigins = array_map('trim', explode(',',
 		$_ENV['CORS_ALLOWED_ORIGINS']
 			?? $_ENV['CORS_ALLOWED_ORIGIN']
-			?? 'http://localhost:4200,http://localhost:4300,http://localhost,https://localhost,capacitor://localhost'
+			?? 'http://localhost:4200,http://localhost:4300,http://localhost,https://localhost,capacitor://localhost,https://citas-medicas-m7k1.onrender.com'
 	));
 	$isAllowed = $origin !== '' && in_array($origin, $allowedOrigins, true);
 
